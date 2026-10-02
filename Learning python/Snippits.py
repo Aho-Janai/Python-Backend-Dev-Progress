@@ -7,11 +7,6 @@ z2 = complex(0, -2)
 print("1) Complex numbers:")
 print(f"z1 = {z1}, z2 = {z2}")
 
-# 2) Conjugate
-conjugate = z1.conjugate()
-print("\n2) Conjugate:")
-print(f"conjugate(z1) = {conjugate}")
-
 # 3) Magnitude (modulus) and argument
 modulus = abs(z1)
 argument = cmath.phase(z1)
