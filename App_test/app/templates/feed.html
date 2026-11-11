@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <style>
+    .stroke-feed { display: flex; flex-direction: column; gap: 12px; max-width: 640px; padding: 0; list-style: none; }
+    .stroke-card { display: flex; gap: 16px; align-items: center; padding: 12px; border: 1px solid rgba(127,127,127,.35); border-radius: 8px; }
+    .stroke-card svg { flex: none; width: 160px; height: 160px; background: rgba(127,127,127,.12); border-radius: 6px; }
+    .stroke-card .meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .stroke-card .sub { opacity: .7; font-size: .9em; }
+    @media (max-width: 480px) { .stroke-card { flex-direction: column; align-items: flex-start; } }
+  </style>
+
+  <h1>Strokes</h1>
+  <ul class="stroke-feed">
+    {% for s in strokes %}
+    {% set pts = s.svg_points() %}
+    <li class="stroke-card">
+      <svg viewBox="0 0 160 160" role="img" aria-label="Path of {{ s.tool }} stroke {{ s.seq }}">
+        <polyline points="{{ pts }}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        {% if pts %}{% set start = pts.split(' ')[0].split(',') %}
+        <circle cx="{{ start[0] }}" cy="{{ start[1] }}" r="4" fill="currentColor"/>{% endif %}
+      </svg>
+      <div class="meta">
+        <strong>{{ s.tool|capitalize }} · stroke {{ s.seq }}</strong>
+        <span>{{ s.points|length if s.points else 0 }} points · {{ s.duration_ms if s.duration_ms is not none else '?' }} ms
+          · {% if s.size is not none %}{{ '%g'|format(s.size) }} px{% else %}size unknown{% endif %}</span>
+        <span class="sub">session {{ s.session_id[:8] }} · imported {{ s.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</span>
+      </div>
+    </li>
+    {% else %}
+    <li>No strokes yet. Import a recording with <code>flask import-atn path\to\file.atn</code>.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
